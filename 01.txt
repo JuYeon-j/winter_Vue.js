@@ -1,0 +1,18 @@
+   • Vue.js : The Progressive JavaScript Framework
+   - 점진적인 자바스크립트 프레임워크
+   - 점진적인 : 웹 프론트의 프로젝트를 일부분부터 조금씩 vue로 수정가능하게
+   - 웹프론트엔드
+   MVC에서 View에 해당
+   - SPA(Single Page Application)의 View 단 개발용 프레임워크
+   • MVVM(Model-View-ViewModel)
+   - Model : 어플리케이션 데이터를 저장하는 곳, 비즈니스 로직 결정을 ViewModel에서 하도록 함
+   - ViewModel : 객체에 어플리케이션 데이터(어플리케이션 상태)를 유지 관리하고 Model로부터 데이터를 전달받음
+   - View : 사용자가 보는 내용, 어플리케이션 상태를 Model로부터 전달받은 ViewModel에 의해서 내용을 렌더링 하는 부분
+   - Binder : data binding : ViewModel에서의 스토어 객체의 데이터에 따라 View에 데이터 변경하거나                                    
+                                 View의 데이터 변경 ViewModel에 반영
+   • MVVM과 Vue
+   - Vue 인스턴스(객체)
+   View : HTML+CSS
+   Binder, ViewModel, Model(Ajax 등을 이용하여 DB 내용을 가져옴) : JavaScript
+   <상용버전, 속도와 용량이 최적화됨>
+   <script src="https://unpkg.com/vue"></script>
