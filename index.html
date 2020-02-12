@@ -6,6 +6,7 @@
     <title>애완용품샵</title>
     <!-- Vuejs라이브러리 임포트 -->
     <script src="https://unpkg.com/vue"></script>
+    <link rel="stylesheet" href="./assets/css/app.css">
     <!-- Bootstrap 라이브러리 임포트 -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -13,7 +14,16 @@
 <body>
     <div id="app">
         <header>
-            <h1 v-text='sitename'></h1>
+            <div class="navbar navbar-default">
+                <div class="navbar-header">
+                    <h1 v-text='sitename'></h1>
+                </div>
+                <div class="nav navbar-nav navbar-right cart">
+                    <span class="glyphicon glyphicon-shopping-cart">
+                        {{ cartItemCount }}
+                    </span>
+                </div>
+            </div>          
         </header>
         <main>
             <div class="row">
@@ -31,7 +41,8 @@
                     <!-- v-html: Directive, html표시하는, $().html(), el.innerHTML, XSS(Cross Site Scripting)공격 대비해야 함 -->
                     <!-- <p v-text='product.price' class='price'></p> -->
                     <p class='price'>{{ product.price | formatPrice }}</p>
-                    <!-- 필터적용: {{ property|filterfunctionname }} -->
+                                                    <!-- @click='addToCart' -->
+                    <button class="btn btn-primary btn-lg" v-on:click='addToCart'>장바구니 담기</button>
                 </div>
             </div>
         </main>
@@ -49,10 +60,22 @@
                     price: 2500,
                     image: 'assets/images/product-fullsize.png'
                 },
+                cart:[],
                 
             },
-            filters:{ // filter 옵션에 필터 함수 작성
-                    formatPrice:function(price){ // price값을 전달받아 가격표시형식으로 반환
+            computed:{
+                cartItemCount:function(){
+                    return this.cart.length || "";
+                }
+            },
+            methods:{
+                addToCart: function(){this.cart.push(this.product.id);}
+
+            },
+            // 필터적용: {{ property|filterfunctionname }} 
+            filters:{
+                    // filter 옵션에 필터 함수 작성
+                    formatPrice:(price)=>{ // price값을 전달받아 가격표시형식으로 반환
                         if(!parseInt(price)){return "";}
                         if(price>99999){
                             var priceString = (price/100).toFixed(2); //문자열로 바꿔줌
@@ -66,7 +89,6 @@
                         }else{
                             return (price/100).toFixed(2);
                         }
-
                     }
                 },
             beforeCreate:function(){

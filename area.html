@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>넓이 계산- Vue.js</title>
+     <!-- Vuejs라이브러리 임포트 -->
+     <script src="https://unpkg.com/vue"></script>
+     <!-- Bootstrap 라이브러리 임포트 -->
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> 
+</head>
+<body>
+    <div id="app">
+        <p>넓이: {{area}}</p> 
+        <p>
+            <!-- methods사용할 때는 'length++; test();'  -->
+            <button @click='length++'>세로추가</button>
+            <button @click='width++'>가로추가</button>
+        </p>
+    </div>
+    <script>
+        const webstore = new Vue({
+            el: '#app',
+            data: { // DB에서 가져온 것은 data로
+                length: 5,
+                width: 3,
+                // area: 0,
+            },
+            // methods:{
+            //     test: function(){
+            //         this.area = this.length * this.width;
+            //     }
+            // },
+            computed:{ // DB에서 가져온 데이터로 수정하여 처리 할 데이터
+                area: function(){
+                    // 계산 결과 리턴
+                    return this.length * this.width;
+                }
+            },
+            watch:{ // 변수 변경 상황 조사
+                length:function(newVal, oldVal){
+                    // 세로값 변경하면 호출
+                    console.log("OLD(length): "+oldVal+"\nNew: "+newVal);
+                },
+                width:function(newVal, oldVal){
+                    console.log("OLD(width): "+oldVal+"\nNew: "+newVal);
+                },
+                area:function(newVal, oldVal){
+                    console.log("OLD(area): "+oldVal+"\nNew: "+newVal);
+                },
+            },
+            beforeUpdate:function(){
+                console.log('데이터 변경 전');
+            },
+            updated:function(){
+                console.log('데이터 변경 후');
+            },
+            
+        });
+    </script>
+</body>
+</html>
