@@ -73,11 +73,11 @@
                             <div class="form-group">
                                 <div class="col-md-6">
                                     <strong>이름: </strong>
-                                    <input v-model="order.fName" type="text" class="form-control">
+                                    <input v-model.trim="order.fName" type="text" class="form-control">
                                 </div>
                                 <div class="col-md-6">
                                     <strong>성: </strong>
-                                    <input v-model="order.lName" type="text" class="form-control">
+                                    <input v-model.trim="order.lName" type="text" class="form-control">
                                 </div>
                             </div>
 
@@ -86,7 +86,7 @@
                                     <strong>주소: </strong>
                                 </div>
                                 <div class="col-md-12">
-                                    <input v-model="order.addr" type="text" class="form-control">
+                                    <input v-mode.triml="order.addr" type="text" class="form-control">
                                 </div>
                             </div>
 
@@ -95,7 +95,7 @@
                                     <strong>구: </strong>
                                 </div>
                                 <div class="col-md-12">
-                                    <input v-model="order.ku" type="text" class="form-control">
+                                    <input v-model.trim="order.ku" type="text" class="form-control">
                                 </div>
                             </div>
 
@@ -104,11 +104,15 @@
                                     <strong>도시: </strong>
                                     <select v-model="order.city" name="" id="" class="form-control">
                                         <option diable value="">도시</option>
-                                        <option>SL</option>
-                                        <option>DG</option>
-                                        <option>PK</option>
-                                        <option>IC</option>
-                                        <option>GM</option>
+                                        <!-- <option v-bind:value="cities.SL">{{cities.SL}}</option>
+                                        <option v-bind:value="cities.DG">{{cities.DG}}</option>
+                                        <option v-bind:value="cities.PK">{{cities.PK}}</option>
+                                        <option v-bind:value="cities.IC">{{cities.IC}}</option>
+                                        <option v-bind:value="cities.GM">{{cities.GM}}</option> -->
+                                        <option v-for="(city,key) in cities" v-bind:value="city" v-bind:key='key'>
+                                            {{city}}
+                                        </option>
+                                        <!-- key -> index를 의미, 숫자, 문자열 -->
                                     </select>
                                 </div>
                             </div>
@@ -116,10 +120,37 @@
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <strong>우편번호: </strong>
-                                    <input v-model="order.zipcode" type="text" class="form-control">
+                                    <input v-model.number="order.zipcode" type="number" class="form-control">
                                 </div>
                                 
                             </div>
+                            
+                            <div class="form-group">
+                                <div class="col-md-6 boxes">
+                                    <input type="checkbox" id="gift" value='true' v-bind:true-value="order.sendGift" v-bind:false-value="order.dontsendGift" v-model='order.gift'>
+                                    <label for="gift">선물보내기?</label>
+                                </div>
+                                
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-6 boxes">
+                                    <input type="radio" id="home" v-bind:value='order.home' v-model='order.method'>
+                                    <label for="home">자택</label>
+                                    <input type="radio" id="business" v-bind:value='order.business' v-model='order.method'>
+                                    <label for="business">직장</label>
+                                </div>
+                                
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-primary submit" @click="submitForm">
+                                        주문하기
+                                    </button>
+                                </div>
+                            </div>
+                            
 
 
                             <div class="col-md-12 verify">
@@ -130,6 +161,8 @@
                                     구: {{order.ku}}
                                     도시: {{order.city}}
                                     우편번호: {{order.zipcode}}
+                                    주소지:{{order.method}}
+                                    선물:{{order.gift}}
                                 </pre>
                             </div>
                         </div>
@@ -147,6 +180,13 @@
             data: {
                 sitename:'vue.js를 이용한 애완용품샵',
                 showProduct: true,
+                cities:{
+                    SL:'서울',
+                    DG:'대구',
+                    PK:'부산',
+                    IC:'인천',
+                    GM:'구미',
+                },
                 order:{
                     fName: '',
                     lName: '',
@@ -154,6 +194,12 @@
                     ku:'',
                     city:'',
                     zipcode:'',
+                    method:'자택주소',
+                    gift: '선물로 보내기',
+                    sendGift: '선물로 보내기',
+                    dontsendGift:'선물로 보내지 않기',
+                    home:'자택주소',
+                    business:'직장주소',
                 },
                 product:{
                     id: 1001,
@@ -163,6 +209,7 @@
                     image: 'assets/images/product-fullsize.png',
                     availableInventory: 6,
                 },
+                
                 cart:[],
                 
             },
@@ -180,8 +227,11 @@
                 },
                 showCheckOut: function(){
                     this.showProduct = this.showProduct ? false : true;
-                }
-
+                },
+                submitForm(){
+                    alert("주문완료");
+                    // 백엔드와 통신하는 코드
+                },
             },
             // 필터적용: {{ property|filterfunctionname }} 
             filters:{
