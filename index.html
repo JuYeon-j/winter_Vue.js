@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="./assets/css/app.css">
     <!-- Bootstrap 라이브러리 임포트 -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Axios라이브러리 임포트 -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 </head>
 <body>
@@ -32,138 +34,152 @@
         <main>
             <div class="row">
                 <div v-if='showProduct'>
-                    <div class="col-md-2 col-md-offset-1">
-                        <figure>
-                            <img v-bind:src="product.image" alt="">
-                            <!-- v-bind: Directive, 양방향 바인딩 
-                                축약표현, :src="product.image"
-                            -->
-                        </figure>
+                    <div v-for="product in sortedProducts">
+                        <div class="row">
+                            <div class="col-md-5 col-md-offset-0">
+                                <figure>
+                                    <img v-bind:src="product.image" class='product'>
+                                </figure>
+                            </div>
+                            <div class="col-md-6 col-md-offset-0 description">
+                                <h1 v-text='product.title'></h1>
+                                <p v-html='product.description'></p>
+                                <p class='price'>{{ product.price | formatPrice }}</p>
+                                <button class="btn btn-primary btn-lg" v-on:click='addToCart(product)' v-if='canAddToCart(product)'>
+                                    장바구니 담기</button>
+                                                                            
+                                <button class="btn btn-primary btn-lg" disable='true' v-else >
+                                    장바구니 담기</button>
+
+                                <span class="inventory-message" v-if="product.availableInventory - cartCount(product.id)===0 ">
+                                    품절입니다.
+                                </span>
+                                <span class="inventory-message" v-else-if="product.availableInventory - cartCount(product.id)<5 ">
+                                    {{product.availableInventory - cartItemCount}} 남았습니다.
+                                </span>
+                            
+                                <span class="inventory-message" v-else>
+                                    구매가능!!!
+                                </span>
+        
+                                <div class="rating">
+                                    <span v-bind:class="{'rating-active':checkRating(n, product)}" v-for='n in 5'>☆</span>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
                     </div>
-                    <div class="col-md-6 col-md-offset-2 description">
-                        <h1 v-text='product.title'></h1>
-                        <p v-html='product.description'></p>
-                        <!-- v-html: Directive, html표시하는, $().html(), el.innerHTML, XSS(Cross Site Scripting)공격 대비해야 함 -->
-                        <!-- <p v-text='product.price' class='price'></p> -->
-                        <p class='price'>{{ product.price | formatPrice }}</p>
-                                                        <!-- @click='addToCart' -->
-                                                                        
-                   
-                                                                                 <!-- v-show='canAddToCart' -->
-                        <button class="btn btn-primary btn-lg" v-on:click='addToCart' v-if='canAddToCart'>
-                            장바구니 담기</button>
-                                                                    
-                        <button class="btn btn-primary btn-lg" disable='true' v-else >
-                            장바구니 담기</button>
-                    </div>
-                    
+                         
                 </div>
                 <div v-else>
-                    <!-- <h1>체크아웃화면</h1> -->
-                    <div class="panel panel-info">
-                        <div class="panel-heading">
-                            애완용품샵 장바구니
-                        </div>
-                        <div class="panel-body">
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <h4><strong>정보를 입력하시오.</strong></h4>
-                                </div>
+                    <div class="row">
+                        <!-- <h1>체크아웃화면</h1> -->
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                                애완용품샵 장바구니
                             </div>
-                            <div class="form-group">
-                                <div class="col-md-6">
-                                    <strong>이름: </strong>
-                                    <input v-model.trim="order.fName" type="text" class="form-control">
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <h4><strong>정보를 입력하시오.</strong></h4>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <strong>성: </strong>
-                                    <input v-model.trim="order.lName" type="text" class="form-control">
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <strong>이름: </strong>
+                                        <input v-model.trim="order.fName" type="text" class="form-control">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <strong>성: </strong>
+                                        <input v-model.trim="order.lName" type="text" class="form-control">
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <strong>주소: </strong>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <strong>주소: </strong>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <input v-mode.triml="order.addr" type="text" class="form-control">
+                                    </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <input v-model.trim="order.addr" type="text" class="form-control">
-                                </div>
-                            </div>
 
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    <strong>구: </strong>
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <strong>구: </strong>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <input v-model.trim="order.ku" type="text" class="form-control">
+                                    </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <input v-model.trim="order.ku" type="text" class="form-control">
-                                </div>
-                            </div>
 
-                            <div class="form-group">
-                                <div class="col-md-2">
-                                    <strong>도시: </strong>
-                                    <select v-model="order.city" name="" id="" class="form-control">
-                                        <option diable value="">도시</option>
-                                        <!-- <option v-bind:value="cities.SL">{{cities.SL}}</option>
-                                        <option v-bind:value="cities.DG">{{cities.DG}}</option>
-                                        <option v-bind:value="cities.PK">{{cities.PK}}</option>
-                                        <option v-bind:value="cities.IC">{{cities.IC}}</option>
-                                        <option v-bind:value="cities.GM">{{cities.GM}}</option> -->
-                                        <option v-for="(city,key) in cities" v-bind:value="city" v-bind:key='key'>
-                                            {{city}}
-                                        </option>
-                                        <!-- key -> index를 의미, 숫자, 문자열 -->
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <div class="col-md-6 col-md-offset-4">
-                                    <strong>우편번호: </strong>
-                                    <input v-model.number="order.zipcode" type="number" class="form-control">
+                                <div class="form-group">
+                                    <div class="col-md-2">
+                                        <strong>도시: </strong>
+                                        <select v-model="order.city" name="" id="" class="form-control">
+                                            <option diable value="">도시</option>
+                                            <!-- <option v-bind:value="cities.SL">{{cities.SL}}</option>
+                                            <option v-bind:value="cities.DG">{{cities.DG}}</option>
+                                            <option v-bind:value="cities.PK">{{cities.PK}}</option>
+                                            <option v-bind:value="cities.IC">{{cities.IC}}</option>
+                                            <option v-bind:value="cities.GM">{{cities.GM}}</option> -->
+                                            <option v-for="(city,key) in cities" v-bind:value="city" v-bind:key='key'>
+                                                {{city}}
+                                            </option>
+                                            <!-- key -> index를 의미, 숫자, 문자열 -->
+                                        </select>
+                                    </div>
                                 </div>
                                 
-                            </div>
-                            
-                            <div class="form-group">
-                                <div class="col-md-6 boxes">
-                                    <input type="checkbox" id="gift" value='true' v-bind:true-value="order.sendGift" v-bind:false-value="order.dontsendGift" v-model='order.gift'>
-                                    <label for="gift">선물보내기?</label>
+                                <div class="form-group">
+                                    <div class="col-md-6 col-md-offset-4">
+                                        <strong>우편번호: </strong>
+                                        <input v-model.number="order.zipcode" type="number" class="form-control">
+                                    </div>
+                                    
                                 </div>
                                 
-                            </div>
+                                <div class="form-group">
+                                    <div class="col-md-6 boxes">
+                                        <input type="checkbox" id="gift" value='true' v-bind:true-value="order.sendGift" v-bind:false-value="order.dontsendGift" v-model='order.gift'>
+                                        <label for="gift">선물보내기?</label>
+                                    </div>
+                                    
+                                </div>
 
-                            <div class="form-group">
-                                <div class="col-md-6 boxes">
-                                    <input type="radio" id="home" v-bind:value='order.home' v-model='order.method'>
-                                    <label for="home">자택</label>
-                                    <input type="radio" id="business" v-bind:value='order.business' v-model='order.method'>
-                                    <label for="business">직장</label>
+                                <div class="form-group">
+                                    <div class="col-md-6 boxes">
+                                        <input type="radio" id="home" v-bind:value='order.home' v-model='order.method'>
+                                        <label for="home">자택</label>
+                                        <input type="radio" id="business" v-bind:value='order.business' v-model='order.method'>
+                                        <label for="business">직장</label>
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-primary submit" @click="submitForm">
+                                            주문하기
+                                        </button>
+                                    </div>
                                 </div>
                                 
-                            </div>
 
-                            <div class="form-group">
-                                <div class="col-md-6">
-                                    <button type="submit" class="btn btn-primary submit" @click="submitForm">
-                                        주문하기
-                                    </button>
+
+                                <div class="col-md-12 verify">
+                                    <pre>
+                                        이름: {{order.fName}}
+                                        성: {{order.lName}}
+                                        주소: {{order.addr}}
+                                        구: {{order.ku}}
+                                        도시: {{order.city}}
+                                        우편번호: {{order.zipcode}}
+                                        주소지:{{order.method}}
+                                        선물:{{order.gift}}
+                                    </pre>
                                 </div>
-                            </div>
-                            
-
-
-                            <div class="col-md-12 verify">
-                                <pre>
-                                    이름: {{order.fName}}
-                                    성: {{order.lName}}
-                                    주소: {{order.addr}}
-                                    구: {{order.ku}}
-                                    도시: {{order.city}}
-                                    우편번호: {{order.zipcode}}
-                                    주소지:{{order.method}}
-                                    선물:{{order.gift}}
-                                </pre>
                             </div>
                         </div>
                     </div>
@@ -201,15 +217,16 @@
                     home:'자택주소',
                     business:'직장주소',
                 },
-                product:{
-                    id: 1001,
-                    title: '고양이 사료, 2500원',
-                    description:'당신의 고양이를 위한 <em>거부할 수 없는</em> 유기농 2500원짜리 사료입니다.',
-                    price: 2500,
-                    image: 'assets/images/product-fullsize.png',
-                    availableInventory: 6,
-                },
-                
+                // product:{
+                //     id: 1001,
+                //     title: '고양이 사료, 2500원',
+                //     description:'당신의 고양이를 위한 <em>거부할 수 없는</em> 유기농 2500원짜리 사료입니다.',
+                //     price: 2500,
+                //     image: 'assets/images/product-fullsize.png',
+                //     availableInventory: 6,
+                //     rating:3,
+                // },
+                products:[],
                 cart:[],
                 
             },
@@ -217,13 +234,34 @@
                 cartItemCount:function(){
                     return this.cart.length || "";
                 },
-                canAddToCart(){
-                    return this.product.availableInventory > this.cartItemCount;
-                }
+                sortedProducts(){  // 정렬된 형태로 리턴됨
+                    if(this.products.length>0){
+                        let productsArray = this.products.slice(0);
+                        function compare(a,b){
+                            if(a.title.toLowerCase()<b.title.toLowerCase())
+                                return -1;
+                            if(a.title.toLowerCase()>b.title.toLowerCase())
+                                return 1;
+                            return 0;
+                        }
+                        return productsArray.sort(compare);
+                    }
+                },
+                
             },
             methods:{
-                addToCart: function(){
-                    this.cart.push(this.product.id);
+                canAddToCart(myProduct){
+                    return myProduct.availableInventory > this.cartCount(myProduct.id);
+                },
+                addToCart: function(myProduct){
+                    this.cart.push(myProduct.id);
+                },
+                cartCount(id){
+                    let count = 0;
+                    for(var i = 0; i<this.cart.length; i++){
+                        if(this.cart[i] === id) count++;
+                    }
+                    return count;
                 },
                 showCheckOut: function(){
                     this.showProduct = this.showProduct ? false : true;
@@ -231,6 +269,9 @@
                 submitForm(){
                     alert("주문완료");
                     // 백엔드와 통신하는 코드
+                },
+                checkRating(n, myProduct){
+                    return myProduct.rating-n>=0;
                 },
             },
             // 필터적용: {{ property|filterfunctionname }} 
@@ -258,9 +299,22 @@
                 }
             },
             created:function(){
-                if(LOG_DISPLAY){
-                    console.log("생성 후 이벤트");
-                }
+                // if(LOG_DISPLAY){
+                //     console.log("생성 후 이벤트");
+                // }
+                axios.get('./products.json')
+                .then((res)=>{
+                    this.products=res.data.products;
+                    console.log(this.products);
+                }).catch((err)=>{
+                    console.log(err);
+                });
+                // axios의 get메서드: GET방식으로 요청하여 처리
+                // get메서드 결과는 promise객체
+                // then메서드: axios요청이 성공되면 호출
+                // catch메서드: axios요청이 실패되면 호출
+                // then메서드에서 응답객체는 res객체에 저장
+                // 최종결과는 res객체의 data프로파티에 저장되어 있음
             },
             beforeMount:function(){
                 if(LOG_DISPLAY){

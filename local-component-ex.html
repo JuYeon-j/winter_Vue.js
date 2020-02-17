@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- Vuejs라이브러리 임포트 -->
+    <script src="https://unpkg.com/vue"></script>
+    <link rel="stylesheet" href="./assets/css/app.css">
+    <!-- Bootstrap 라이브러리 임포트 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+</head>
+<body>
+    <div id="app">   <!--부모-->
+        <my-componenßßt></my-componenßßt>
+        <h1>{{msg}}</h1>
+    </div>
+    <script>
+        const ChildComponent = {
+            template:'<div>이건, 지역 컴포넌트야!</div>'  // 자식
+        };
+        const webstore = new Vue({
+            el:'#app',
+            components:{
+                'my-componenßßt': ChildComponent
+                // myComponent - ok
+                // my-component - ok
+                // MyComponent - ok
+                // my_component - error
+                // mycomponent - error
+            },
+            data:{
+                msg:'확인용'
+            }
+        });
+    </script>
+</body>
+</html>

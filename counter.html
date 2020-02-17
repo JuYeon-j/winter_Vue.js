@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Vuejs라이브러리 임포트 -->
+    <script src="https://unpkg.com/vue"></script>
+    <link rel="stylesheet" href="./assets/css/app.css">
+    <!-- Bootstrap 라이브러리 임포트 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+</head>
+<body>
+    <div id="app">
+        <my-counter :msg='test'></my-counter>
+        <my-counter></my-counter>
+        <my-counter></my-counter>
+    </div>
+   
+    <script>
+        
+        const MyCounter = {
+            template:`
+                <div>
+                    <button @click="counter+=1">{{counter}}</button>
+                    {{msg}}
+                </div>
+                     `,
+            props:['msg'],
+            data(){  // 부모 컴포넌트와 다름
+                return {counter:0};
+            }
+        };
+
+        new Vue({
+            el:'#app',
+            components:{
+                'my-counter' : MyCounter,
+            },
+            data(){
+                return {test:'카운터'}
+            }
+        });
+    </script>
+</body>
+
+</html>
