@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <div id="app">
+        <form-com :author='authorLabel' :title='titleLable'>
+            <h1>{{header}}</h1>
+            <label for="title" slot='titleSlot'>{{titleLable}}</label>
+            <label for="author" slot='authorSlot'>{{authorLabel}}</label>
+        </form-com>
+    </div>
+    <script>
+        const FormCom = {
+            template:`
+            <div>
+                <slot></slot>
+                <form action="">
+                    <slot name="titleSlot"></slot>
+                    
+                    <input id='title' type="text"><br>
+                    <slot name="authorSlot"></slot>
+                    <input id='author' type="text"><br>
+                    <button>제출하기</button>
+                </form>
+            </div>
+    
+            `,
+            props:['author','title'],
+        }
+        new Vue({
+            el:"#app",
+            components:{'form-com':FormCom},
+            data(){
+                return {
+                    titleLable: '제목', 
+                    authorLabel: '저자',
+                    pageLength: '',
+                    header:'책저자 입력폼',
+                };
+            }
+        });
+    </script>
+</body>
+</html>

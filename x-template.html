@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue"></script>
+   
+</head>
+<body>
+ 
+    <div id="app">
+        <my-component :testinfo='msg'>
+            <!-- <div>
+                <p>
+                    inline-template: {{testinfo}}
+                </p>
+            </div> -->
+        </my-component>
+
+    </div>
+    <script type='text/x-template' id='my-component'>
+        <div>
+            <p>
+                text/x-template: {{testinfo}}
+            </p>
+        </div> 
+    </script>
+    <script>
+       
+        const MyComponent = {
+            template: '#my-component',
+            props:['testinfo']
+        };
+        const webstore = new Vue({
+            el: '#app',
+            components:{
+                'my-component': MyComponent,
+            },
+            data(){
+                return{
+                    msg:"데이터",
+                };
+            }
+        });
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue"></script>
+   
+</head>
+<body>
+    
+    
+    
+    <div id="app">
+        <yju-japan-it :num='passNum' :str='passedStr' :obj='passObj' :even='passNum'>
+
+        </yju-japan-it>
+
+    </div>
+    <script>
+        const yju_japanIT = {
+            template:`
+                    <div>
+                        숫자: {{num}}<br>
+                        문자열: {{str}}<br>
+                        객체: {{obj}}<br>
+                        짝수? {{even}}
+                    </div>
+                    `,
+            props:{
+                num: {type: Number, required: true},
+                str: {type: String, default: '펭하'},
+                obj: {type: Object, default: ()=>{ return {msg:'안녕!, 객체 디폴트값이야!'}; }},
+                even: {validator :(val)=>{return (val % 2 === 0); }},
+            }
+        };
+
+        const webstore = new Vue({
+            el: '#app',
+            components:{
+                'yju-japan-it': yju_japanIT,
+            },
+            data(){
+                return{
+                    passedStr: '부모로부터의 데이터',
+                    passNum: 47,
+                    passObj: {msg: '객체로 부모에서 넘어감'},
+                };
+            }
+        });
+    </script>
+    
+</body>
+</html>
