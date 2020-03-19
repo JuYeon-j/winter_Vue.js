@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Vuejs라이브러리 임포트 -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <div id="app">
+        <form-component :author = 'authorLabel' v-bind:title='titleLabel'></form-component>
+    </div>
+
+    
+    <script>
+        const FormComponent = {
+            template: `
+                <div>
+                    <form action="">
+                    <label for="title">{{title}}</label>
+                    <input type="text" id="title"> <br/>
+                    <label for="author">{{author}}</label>
+                    <input type="text" id="author"> <br/>
+                    <button>전송</button>
+                    </form>
+                </div>
+                    `,
+            props: ['title','author']
+        };
+
+        new Vue({
+            el: '#app',
+            components:{'form-component':FormComponent},
+            data(){
+                return{
+                    titleLabel:'제목',
+                    authorLabel: '저자명',
+                    pageLenght:''
+                }
+            }
+        })
+    </script>
+</body>
+</html>

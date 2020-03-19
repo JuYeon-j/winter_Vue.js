@@ -125,7 +125,7 @@
                                             <option v-bind:value="cities.IC">{{cities.IC}}</option>
                                             <option v-bind:value="cities.GM">{{cities.GM}}</option> -->
                                             <option v-for="(city,key) in cities" v-bind:value="city" v-bind:key='key'>
-                                                {{city}}
+                                                {{key}}.{{city}}
                                             </option>
                                             <!-- key -> index를 의미, 숫자, 문자열 -->
                                         </select>
@@ -202,6 +202,7 @@
                     PK:'부산',
                     IC:'인천',
                     GM:'구미',
+                    MS:'마산',
                 },
                 order:{
                     fName: '',

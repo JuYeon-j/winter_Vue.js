@@ -10,8 +10,10 @@
     <div id="app">
         <form-com :author='authorLabel' :title='titleLable'>
             <h1>{{header}}</h1>
-            <label for="title" slot='titleSlot'>{{titleLable}}</label>
+            <!-- <label for="title" slot='titleSlot'>{{titleLable}}</label> -->
+            <p slot='titleSlot'>{{titleLable}}보입니까??</p>
             <label for="author" slot='authorSlot'>{{authorLabel}}</label>
+            <h2>테스트</h2>
         </form-com>
     </div>
     <script>
