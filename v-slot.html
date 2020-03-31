@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <div id="app">
+        <book-com :booklist="booklistp">
+            <h1 slot="header">{{header}}</h1>
+            <template v-slot:bookslot='slotedprops'>
+                <!-- v-:생략되는 경우
+                    v-bind: ===> :
+                    v-on ======> @
+                    v-slot ====> #
+                -->
+                <h2>
+                    <i>
+                        {{slotedprops.text.title}}
+                    </i>
+                    <small>
+                        by: {{slotedprops.text.author}}
+                    </small>
+                </h2>
+            </template>    
+        </book-com>
+    </div>
+    
+    <script>
+        const BookCom ={
+            template:`
+            <div>
+                <slot name='header'></slot>
+                <slot name='bookslot' v-for='bookdata in booklist' :text='bookdata'></slot>
+            </div>
+            `,
+            props:['booklist']
+        }
+        new Vue({
+            el:'#app',
+            components: {
+                'book-com':BookCom,
+            },
+            data(){
+                return{
+                    header:'영진전문대 책 목록',
+                    booklistp:[{author:'김영진',title:'뷰예제'},{author:'이영진',title:'리엑트예제'},{author:'최영진',title:'라라벨예제'}]
+                } 
+            }
+        });
+    </script>
+    
+</body>
+</html>

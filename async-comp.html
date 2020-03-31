@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <div id="app">
+        <book-comp></book-comp>
+    </div>
+    <script>
+        var bflag = true;
+        const BookComp = function(resovle, reject){
+            setTimeout(
+                function(){
+                    resovle({template:`
+                    <div><h1>비동기 컴포넌트입니다.</h1></div>
+                    `});
+                },3000
+            );
+            if(!bflag) reject(new Error('거절됨'));
+        };
+        new Vue({el:'#app', components:{'book-comp':BookComp}});
+    </script>
+</body>
+</html>

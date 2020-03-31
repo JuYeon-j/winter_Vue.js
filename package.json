@@ -16,6 +16,8 @@
   },
   "homepage": "https://github.com/JuYeon-j/winter_Vue.js#readme",
   "dependencies": {
+    "@vue/cli": "^4.2.3",
+    "@vue/cli-init": "^4.2.3",
     "http-server": "^0.12.1"
   },
   "devDependencies": {},

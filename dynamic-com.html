@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <div id="app">
+        <button @click='changecomp'>컴포넌트변경</button>
+        <h1>
+            <component :is='currectComp' />        
+        </h1>
+    </div>
+    <script>
+        const BookComp={
+            template:`
+                <div>책컴포넌트</div>
+            `
+        };
+        const FormComp={
+            template:`
+                <div>폼컴포넌트</div>
+            `
+        };
+        new Vue({
+            el:'#app',
+            components: {
+                'book-comp':BookComp,
+                'form-comp':FormComp,
+            },
+            data(){
+                return{
+                    currectComp:BookComp
+                }
+            },
+            methods:{
+                changecomp(){
+                    if(this.currectComp===BookComp){
+                        this.currectComp=FormComp;
+                    }else{
+                        this.currectComp=BookComp;
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
